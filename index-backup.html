@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScamShield | Digital Safety</title>
+<style>
+:root {
+  --bg: #081321;
+  --panel: #111f32;
+  --teal: #38e0c0;
+  --text: #f2f7ff;
+  --muted: #a8b8cc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #15324a, var(--bg) 55%);
+  color: var(--text);
+  min-height: 100vh;
+}
+header {
+  padding: 22px 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #263b50;
+}
+.brand { font-size: 22px; font-weight: bold; }
+.brand span { color: var(--teal); }
+.tag {
+  border: 1px solid #286b68;
+  color: var(--teal);
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+main {
+  width: min(900px, 92%);
+  margin: 42px auto;
+}
+.hero { text-align: center; margin-bottom: 28px; }
+.hero .icon { font-size: 38px; }
+h1 { font-size: clamp(30px, 5vw, 46px); margin: 12px 0; }
+h1 span { color: var(--teal); }
+.hero p, .muted { color: var(--muted); line-height: 1.6; }
+.card {
+  background: rgba(17,31,50,.96);
+  border: 1px solid #294158;
+  border-radius: 18px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 15px 40px #0003;
+}
+h2 { font-size: 21px; margin-top: 0; }
+textarea {
+  width: 100%;
+  min-height: 135px;
+  resize: vertical;
+  background: #091727;
+  border: 1px solid #35516b;
+  border-radius: 12px;
+  padding: 15px;
+  color: white;
+  font: inherit;
+  line-height: 1.5;
+}
+textarea:focus { outline: 2px solid var(--teal); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+button {
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+.primary { background: var(--teal); color: #06221f; }
+.secondary { background: #243a50; color: white; }
+button:hover { filter: brightness(1.1); }
+#result {
+  display: none;
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+#result ul { padding-left: 22px; }
+.risk { font-size: 18px; font-weight: bold; }
+.tips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+.tip {
+  padding: 15px;
+  border-radius: 12px;
+  background: #0b1a2a;
+  border: 1px solid #263d52;
+  line-height: 1.5;
+}
+.tip b { display: block; margin-bottom: 6px; color: var(--teal); }
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🛡️ Scam<span>Shield</span></div>
+  <div class="tag">DIGITAL SAFETY</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="icon">🔐</div>
+    <h1>Think Before <span>You Trust.</span></h1>
+    <p>Spot common scam warning signs before you take action.<br>
+    Simple awareness for a safer digital world.</p>
+  </section>
+
+  <section class="card">
+    <h2>🔎 Message Safety Checker</h2>
+    <p class="muted">Paste a suspicious message to check for common warning signs.</p>
+    <textarea id="message" placeholder="Paste a sample message here..."></textarea>
+    <div class="actions">
+      <button class="primary" onclick="checkScam()">Analyze Message →</button>
+      <button class="secondary" onclick="clearMessage()">Clear</button>
+    </div>
+    <div id="result" aria-live="polite"></div>
+  </section>
+
+  <section class="card">
+    <h2>💡 Protect Yourself Online</h2>
+    <div class="tips">
+      <div class="tip"><b>🔑 Protect your OTP</b>Never share OTPs, PINs or passwords with anyone.</div>
+      <div class="tip"><b>💳 Avoid surprise fees</b>Verify job offers before paying any registration fee.</div>
+      <div class="tip"><b>🔗 Check links</b>Be cautious with unknown links and unexpected login requests.</div>
+      <div class="tip"><b>🧠 Pause and verify</b>Pressure, threats and unbelievable prizes deserve extra caution.</div>
+    </div>
+  </section>
+  <p class="muted">ScamShield is an educational prototype. Results are based on simple keyword rules and cannot guarantee that a message is safe or fraudulent.</p>
+</main>
+
+<footer>ScamShield • Think smart. Stay safe.</footer>
+
+<script>
+function checkScam() {
+  const message = document.getElementById("message").value.toLowerCase().trim();
+  const result = document.getElementById("result");
+
+  if (!message) {
+    result.style.display = "block";
+    result.style.background = "#493a1c";
+    result.style.color = "#fff0bd";
+    result.innerHTML = "Please enter a message first.";
+    return;
+  }
+
+  const rules = [
+    { words: ["otp", "verification code", "share your pin", "password"], text: "The message mentions a secret code, PIN or password." },
+    { words: ["registration fee", "processing fee", "pay now", "advance payment", "upfront fee"], text: "The message may request an upfront payment." },
+    { words: ["urgent", "immediately", "act now", "limited time"], text: "The message uses urgency or pressure." },
+    { words: ["you won", "lottery", "claim your prize", "prize money"], text: "The message mentions an unexpected prize." },
+    { words: ["click here", "click this link", "verify your account", "account suspended"], text: "The message asks you to click or verify an account." },
+    { words: ["guaranteed job", "work from home", "instant income"], text: "The message makes a job or income claim that needs verification." }
+  ];
+
+  const warnings = rules.filter(rule =>
+    rule.words.some(word => message.includes(word))
+  ).map(rule => rule.text);
+
+  let level, color, advice;
+
+  if (warnings.length >= 3) {
+    level = "HIGH";
+    color = "#51252c";
+    advice = "Several warning signs were found. Do not share sensitive information or pay before independently verifying the sender.";
+  } else if (warnings.length >= 2) {
+    level = "MEDIUM";
+    color = "#4b3b20";
+    advice = "Multiple warning signs were found. Pause and verify the sender through an independent, trusted channel.";
+  } else if (warnings.length === 1) {
+    level = "LOW — CAUTION";
+    color = "#254239";
+    advice = "A warning sign was found. This does not confirm a scam; verify the message before acting.";
+  } else {
+    level = "NO LISTED WARNING SIGNS";
+    color = "#20394c";
+    advice = "No listed keywords were found. This does not mean the message is safe. Check the sender and context.";
+  }
+
+  result.style.display = "block";
+  result.style.background = color;
+  result.style.color = "#ffffff";
+
+  let details = warnings.length
+    ? "<ul>" + warnings.map(w => "<li>" + w + "</li>").join("") + "</ul>"
+    : "<p>No matching warning keywords were detected by this basic checker.</p>";
+
+  result.innerHTML =
+    '<div class="risk">Risk assessment: ' + level + '</div>' +
+    details + '<p>' + advice + '</p>';
+}
+
+function clearMessage() {
+  document.getElementById("message").value = "";
+  document.getElementById("result").style.display = "none";
+  document.getElementById("message").focus();
+}
+</script>
+</body>
+</html>
